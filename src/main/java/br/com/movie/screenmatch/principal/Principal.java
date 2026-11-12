@@ -7,6 +7,8 @@ import br.com.movie.screenmatch.model.DadosSerie;
 import br.com.movie.screenmatch.model.DadosTemporada;
 import br.com.movie.screenmatch.model.Episodio;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -58,6 +60,22 @@ public class Principal {
                 ).collect(Collectors.toList());
 
         episodios.forEach(System.out::println);
+
+        System.out.println("A partir de qual ano voce deseja ver os episodios? ");
+        var ano = leitura.nextInt();
+        leitura.nextLine();
+
+        LocalDate databusca = LocalDate.of(ano, 1, 1);
+
+        DateTimeFormatter df = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        episodios.stream()
+                .filter(e -> e.getDataDeCriacao() != null && e.getDataDeCriacao().isAfter(databusca))
+                .forEach(e -> System.out.println(
+                        "Temporada: " + e.getTemporada() +
+                                " Episodio: " + e.getTitulo() +
+                                " Data de lancamento: " + e.getDataDeCriacao().format(df)
+                ));
     }
 }
 
