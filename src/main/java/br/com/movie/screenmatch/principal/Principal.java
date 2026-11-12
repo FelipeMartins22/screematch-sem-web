@@ -5,6 +5,7 @@ import br.com.movie.screenmatch.Service.ConverteDados;
 import br.com.movie.screenmatch.model.DadosEpisodio;
 import br.com.movie.screenmatch.model.DadosSerie;
 import br.com.movie.screenmatch.model.DadosTemporada;
+import br.com.movie.screenmatch.model.Episodio;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -50,6 +51,13 @@ public class Principal {
                 .sorted(Comparator.comparing(DadosEpisodio::avaliacaoEp).reversed())
                 .limit(5)
                 .forEach(System.out::println);
+
+        List<Episodio> episodios = temporadas.stream()
+                .flatMap(t -> t.episodios().stream()
+                        .map(d -> new Episodio(t.numeroTemporada(), d))
+                ).collect(Collectors.toList());
+
+        episodios.forEach(System.out::println);
     }
 }
 
