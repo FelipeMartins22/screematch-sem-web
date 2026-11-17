@@ -19,7 +19,7 @@ public class Principal {
     private ConverteDados conversor = new ConverteDados();
 
     private final String ENDERECO = "https://www.omdbapi.com/?t=";
-    private final String API_KEY = "&apikey=6d00c52e";
+    private final String API_KEY = "&apikey=";
 
     public void exibirMenu() {
         System.out.println("Digite o nome da serie para a busca: ");
@@ -91,6 +91,20 @@ public class Principal {
                                 " Episodio: " + e.getTitulo() +
                                 " Data de lancamento: " + e.getDataDeCriacao().format(df)
                 ));
+
+        Map<Integer, Double> avaliacoesPorTemporada = episodios.stream()
+                .filter(e -> e.getAvaliacaoEp() > 0)
+                .collect(Collectors.groupingBy(Episodio::getTemporada,
+                        Collectors.averagingDouble(Episodio::getAvaliacaoEp)));
+        System.out.println(avaliacoesPorTemporada);
+
+        DoubleSummaryStatistics est = episodios.stream()
+                .filter(e -> e.getAvaliacaoEp() > 0)
+                .collect(Collectors.summarizingDouble(Episodio::getAvaliacaoEp));
+        System.out.println("Media: " + est.getAverage());
+        System.out.println("Nota max: " + est.getMax());
+        System.out.println("Nota min: " + est.getMin());
+        System.out.println("Numero de episodios avaliados: " + est.getCount());
     }
 }
 
