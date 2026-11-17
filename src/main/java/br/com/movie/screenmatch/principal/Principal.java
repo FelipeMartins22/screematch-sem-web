@@ -6,13 +6,11 @@ import br.com.movie.screenmatch.model.DadosEpisodio;
 import br.com.movie.screenmatch.model.DadosSerie;
 import br.com.movie.screenmatch.model.DadosTemporada;
 import br.com.movie.screenmatch.model.Episodio;
+import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonObjectFormatVisitor;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Principal {
@@ -50,8 +48,13 @@ public class Principal {
         System.out.println("\n Top 5 episodios!");
         dadosEpisodios.stream()
                 .filter(e -> !e.avaliacaoEp().equalsIgnoreCase("N/A"))
+                .peek(e -> System.out.println("Primeiro filtro (N/A) " + e ))
                 .sorted(Comparator.comparing(DadosEpisodio::avaliacaoEp).reversed())
+                .peek(e -> System.out.println("Ordenacao " + e))
                 .limit(5)
+                .peek(e -> System.out.println("Limite " + e))
+                .map(e -> e.titulo().toUpperCase())
+                .peek(e -> System.out.println("Mapeamento " + e))
                 .forEach(System.out::println);
 
         List<Episodio> episodios = temporadas.stream()
@@ -60,6 +63,18 @@ public class Principal {
                 ).collect(Collectors.toList());
 
         episodios.forEach(System.out::println);
+
+        System.out.println("Digite o trecho do episodio: ");
+        var trechoTitulo = leitura.nextLine();
+        Optional<Episodio> episodioBuscado = episodios.stream()
+                .filter(e -> e.getTitulo().toUpperCase().contains(trechoTitulo.toUpperCase()))
+                .findFirst();
+        if(episodioBuscado.isPresent()) {
+            System.out.println("Episodio encontrado");
+            System.out.println("Temporada: " + episodioBuscado.get().getTemporada());
+        } else {
+            System.out.println("Episodio nao encontrado!");
+        }
 
         System.out.println("A partir de qual ano voce deseja ver os episodios? ");
         var ano = leitura.nextInt();
